@@ -1,0 +1,13 @@
+{
+  "name": "fastfood-app",
+  "version": "1.0.0",
+  "description": "Fastfood App — Root workspace",
+  "scripts": {
+    "backend": "cd backend && npm start",
+    "backend:dev": "cd backend && npm run dev",
+    "install:backend": "cd backend && npm install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

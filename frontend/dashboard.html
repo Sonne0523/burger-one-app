@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Burger Express — Staff kitchen & counter dashboard." />
+    <title>Burger Express — Staff Dashboard</title>
+    <link rel="stylesheet" href="./css/dashboard.css" />
+  </head>
+  <body>
+
+    <!-- ── Top Bar ───────────────────────────────── -->
+    <header class="topbar">
+      <div class="brand">
+        <span>👨‍🍳 Kitchen & Counter</span>
+        <span class="dot" id="status-dot"></span>
+      </div>
+      <span class="status-text" id="status-text">Connecting…</span>
+      <button class="refresh-btn" onclick="loadOrders()">⟳ Refresh</button>
+    </header>
+
+    <!-- ── Stats Bar ─────────────────────────────── -->
+    <section class="stats-bar" aria-label="Order statistics">
+      <div class="stat-card total">
+        <div class="label">Total Orders</div>
+        <div class="value" id="stat-total">—</div>
+      </div>
+      <div class="stat-card pending">
+        <div class="label">Pending</div>
+        <div class="value" id="stat-pending">—</div>
+      </div>
+      <div class="stat-card paid">
+        <div class="label">Paid</div>
+        <div class="value" id="stat-paid">—</div>
+      </div>
+      <div class="stat-card revenue">
+        <div class="label">Revenue</div>
+        <div class="value" id="stat-revenue">—</div>
+      </div>
+    </section>
+
+    <!-- ── Orders ────────────────────────────────── -->
+    <section>
+      <div class="orders-header">
+        <h2>Live Orders</h2>
+        <div class="filter-tabs" role="tablist">
+          <button class="filter-tab active" data-filter="all"     role="tab">All</button>
+          <button class="filter-tab"        data-filter="pending" role="tab">Pending</button>
+          <button class="filter-tab"        data-filter="paid"    role="tab">Paid</button>
+        </div>
+      </div>
+
+      <div class="orders-grid" id="orders-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <script src="./js/dashboard.js"></script>
+  </body>
+</html>
