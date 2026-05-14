@@ -3,7 +3,7 @@
   "name": "burger-one-app",
   "builds": [
     {
-      "src": "backend/app.js",
+      "src": "api/index.js",
       "use": "@vercel/node"
     },
     {
@@ -14,7 +14,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "backend/app.js"
+      "dest": "api/index.js"
     },
     {
       "src": "/dashboard",
