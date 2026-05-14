@@ -1,152 +1,153 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Burger One — Order your favourite fast food quickly and easily." />
-    <title>Burger One — Order Now</title>
-    <link rel="stylesheet" href="./css/style.css?v=2" />
-  </head>
-  <body>
-    <div class="app">
 
-      <!-- ── Ordering Screen ─────────────────────── -->
-      <div id="order-screen">
-        <div class="header">
-          <div class="header-content">
-            <button id="theme-toggle" class="theme-btn" aria-label="Toggle Theme">🌓</button>
-            <h1>🍔 Burger One</h1>
-            <p>Fresh. Fast. Delicious.</p>
-          </div>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Burger One — Order your favourite fast food quickly and easily." />
+  <title>Burger One — Order Now</title>
+  <link rel="stylesheet" href="./css/style.css?v=2" />
+</head>
 
-        <div class="content">
+<body>
+  <div class="app">
 
-          <!-- Name Input -->
-          <div class="input-group">
-            <label for="custName">YOUR NAME</label>
-            <input
-              id="custName"
-              type="text"
-              placeholder="e.g. Rahul Sharma"
-              autocomplete="name"
-            />
-          </div>
-
-          <!-- Menu -->
-          <p class="section-title">Choose your meal</p>
-          <div id="main-menu-filters">
-            <button class="filter-btn active" onclick="filterMenu('all')">All</button>
-            <button class="filter-btn veg" onclick="filterMenu('veg')"><span class="dot"></span> Veg</button>
-            <button class="filter-btn non-veg" onclick="filterMenu('non-veg')"><span class="dot"></span> Non-Veg</button>
-          </div>
-          <div class="menu-grid" id="menu-grid">
-            <!-- Rendered by JS -->
-          </div>
-
-          <!-- Cart -->
-          <p class="section-title">Your Order</p>
-          <div class="cart-section" id="cart-section">
-            <div class="cart-items" id="cart-items">
-              <div class="cart-empty">Your cart is empty</div>
-            </div>
-            <div class="cart-total" id="cart-total" style="display:none;">
-              <span>Total</span>
-              <span class="total-amount" id="total-amount">₹0.00</span>
-            </div>
-          </div>
-
-          <!-- Order Button -->
-          <button id="order-btn" class="btn-order" onclick="placeOrder()" disabled>
-            🍔 Place Order
-          </button>
-
-          <div class="footer" style="margin-top: 60px; text-align: center; padding: 20px 0; border-top: 1.5px solid var(--border); opacity: 0.6;">
-            <p style="font-size: 13px; color: var(--text-muted);">© 2024 Burger One. All rights reserved.</p>
-            <a href="/login" style="font-size: 11px; color: var(--text-muted); text-decoration: none; margin-top: 10px; display: inline-block; letter-spacing: 1px; text-transform: uppercase;">Staff Login</a>
-          </div>
+    <!-- ── Ordering Screen ─────────────────────── -->
+    <div id="order-screen">
+      <div class="header">
+        <div class="header-content">
+          <button id="theme-toggle" class="theme-btn" aria-label="Toggle Theme">🌓</button>
+          <h1>🍔 Burger One</h1>
+          <p>Fresh. Fast. Delicious.</p>
         </div>
       </div>
 
-      <!-- ── Receipt Screen ──────────────────────── -->
-      <div id="receipt-screen">
-        <div class="receipt-top">
-          <div class="receipt-icon">✅</div>
-          <h2>Order Confirmed!</h2>
-          <p class="subtitle">Your receipt is ready</p>
+      <div class="content">
+
+        <!-- Name Input -->
+        <div class="input-group">
+          <label for="custName">YOUR NAME</label>
+          <input id="custName" type="text" placeholder="e.g. Rahul Sharma" autocomplete="name" />
         </div>
 
-        <!-- Printable Receipt Paper -->
-        <div class="receipt-paper" id="printable-receipt">
-          <div class="rp-header">
-            <div class="rp-logo">🍔</div>
-            <div class="rp-brand">BURGER ONE</div>
-            <div class="rp-tagline">Fast · Fresh · Delicious</div>
+        <!-- Menu -->
+        <p class="section-title">Choose your meal</p>
+        <div id="main-menu-filters">
+          <button class="filter-btn active" onclick="filterMenu('all')">All</button>
+          <button class="filter-btn veg" onclick="filterMenu('veg')"><span class="dot"></span> Veg</button>
+          <button class="filter-btn non-veg" onclick="filterMenu('non-veg')"><span class="dot"></span> Non-Veg</button>
+        </div>
+        <div class="menu-grid" id="menu-grid">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- Cart -->
+        <p class="section-title">Your Order</p>
+        <div class="cart-section" id="cart-section">
+          <div class="cart-items" id="cart-items">
+            <div class="cart-empty">Your cart is empty</div>
           </div>
-
-          <div class="rp-divider">・・・・・・・・・・・・・・・・・</div>
-
-          <div class="rp-section">
-            <div class="rp-row"><span>Order No.</span><span id="receipt-id" class="rp-bold">#000</span></div>
-            <div class="rp-row"><span>Customer</span><span id="receipt-name" class="rp-bold">—</span></div>
-            <div class="rp-row"><span>Date</span><span id="receipt-date">—</span></div>
-            <div class="rp-row"><span>Time</span><span id="receipt-time">—</span></div>
-          </div>
-
-          <div class="rp-divider">・・・・・・・・・・・・・・・・・</div>
-
-          <div class="rp-section" id="receipt-items-list"></div>
-
-          <div class="rp-divider">・・・・・・・・・・・・・・・・・</div>
-
-          <div class="rp-section">
-            <div class="rp-row"><span>Subtotal</span><span id="receipt-subtotal">—</span></div>
-            <div class="rp-row"><span>Tax (5%)</span><span id="receipt-tax">—</span></div>
-          </div>
-          <div class="rp-total-row">
-            <span>TOTAL</span><span id="receipt-grand">—</span>
-          </div>
-
-          <div class="rp-divider">・・・・・・・・・・・・・・・・・</div>
-
-          <div class="rp-status">
-            <span class="status-pill">⏳ PAYMENT PENDING</span>
-            <p>Please proceed to the counter to pay</p>
-          </div>
-
-          <div class="rp-divider">・・・・・・・・・・・・・・・・・</div>
-
-          <div class="rp-footer">
-            <p>Thank you for choosing Burger One!</p>
-            <p>🍔 See you again soon 🍟</p>
+          <div class="cart-total" id="cart-total" style="display:none;">
+            <span>Total</span>
+            <span class="total-amount" id="total-amount">₹0.00</span>
           </div>
         </div>
 
-        <div class="receipt-actions">
-          <button class="btn-print" onclick="downloadReceiptPDF()">⬇️ Download Receipt (PDF)</button>
-          <button class="btn-again" onclick="location.reload()">← Order Again</button>
+        <!-- Order Button -->
+        <button id="order-btn" class="btn-order" onclick="placeOrder()" disabled>
+          🍔 Place Order
+        </button>
+
+        <div class="footer"
+          style="margin-top: 60px; text-align: center; padding: 20px 0; border-top: 1.5px solid var(--border); opacity: 0.6;">
+          <p style="font-size: 13px; color: var(--text-muted);">© 2026 Burger One. All rights reserved.</p>
+          <a href="/login"
+            style="font-size: 11px; color: var(--text-muted); text-decoration: none; margin-top: 10px; display: inline-block; letter-spacing: 1px; text-transform: uppercase;">Staff
+            Login</a>
         </div>
       </div>
-
-      <!-- ── Payment Notice Screen ────────────────── -->
-      <div id="payment-notice-screen" style="display: none;">
-        <div class="notice-card">
-          <div class="notice-icon">🏪</div>
-          <h2>Almost Done!</h2>
-          <p class="notice-text">Please proceed to the <strong>Cash Counter</strong> to complete your payment.</p>
-          <div class="order-summary-box">
-             <p>Show your downloaded receipt to the staff.</p>
-          </div>
-          <button class="btn-finish" onclick="location.reload()">Done</button>
-        </div>
-      </div>
-
     </div>
 
-    <!-- Toast -->
-    <div class="toast" id="toast"></div>
+    <!-- ── Receipt Screen ──────────────────────── -->
+    <div id="receipt-screen">
+      <div class="receipt-top">
+        <div class="receipt-icon">✅</div>
+        <h2>Order Confirmed!</h2>
+        <p class="subtitle">Your receipt is ready</p>
+      </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="./js/index.js"></script>
-  </body>
+      <!-- Printable Receipt Paper -->
+      <div class="receipt-paper" id="printable-receipt">
+        <div class="rp-header">
+          <div class="rp-logo">🍔</div>
+          <div class="rp-brand">BURGER ONE</div>
+          <div class="rp-tagline">Fast · Fresh · Delicious</div>
+        </div>
+
+        <div class="rp-divider">・・・・・・・・・・・・・・・・・</div>
+
+        <div class="rp-section">
+          <div class="rp-row"><span>Order No.</span><span id="receipt-id" class="rp-bold">#000</span></div>
+          <div class="rp-row"><span>Customer</span><span id="receipt-name" class="rp-bold">—</span></div>
+          <div class="rp-row"><span>Date</span><span id="receipt-date">—</span></div>
+          <div class="rp-row"><span>Time</span><span id="receipt-time">—</span></div>
+        </div>
+
+        <div class="rp-divider">・・・・・・・・・・・・・・・・・</div>
+
+        <div class="rp-section" id="receipt-items-list"></div>
+
+        <div class="rp-divider">・・・・・・・・・・・・・・・・・</div>
+
+        <div class="rp-section">
+          <div class="rp-row"><span>Subtotal</span><span id="receipt-subtotal">—</span></div>
+          <div class="rp-row"><span>Tax (5%)</span><span id="receipt-tax">—</span></div>
+        </div>
+        <div class="rp-total-row">
+          <span>TOTAL</span><span id="receipt-grand">—</span>
+        </div>
+
+        <div class="rp-divider">・・・・・・・・・・・・・・・・・</div>
+
+        <div class="rp-status">
+          <span class="status-pill">⏳ PAYMENT PENDING</span>
+          <p>Please proceed to the counter to pay</p>
+        </div>
+
+        <div class="rp-divider">・・・・・・・・・・・・・・・・・</div>
+
+        <div class="rp-footer">
+          <p>Thank you for choosing Burger One!</p>
+          <p>🍔 See you again soon 🍟</p>
+        </div>
+      </div>
+
+      <div class="receipt-actions">
+        <button class="btn-print" onclick="downloadReceiptPDF()">⬇️ Download Receipt (PDF)</button>
+        <button class="btn-again" onclick="location.reload()">← Order Again</button>
+      </div>
+    </div>
+
+    <!-- ── Payment Notice Screen ────────────────── -->
+    <div id="payment-notice-screen" style="display: none;">
+      <div class="notice-card">
+        <div class="notice-icon">🏪</div>
+        <h2>Almost Done!</h2>
+        <p class="notice-text">Please proceed to the <strong>Cash Counter</strong> to complete your payment.</p>
+        <div class="order-summary-box">
+          <p>Show your downloaded receipt to the staff.</p>
+        </div>
+        <button class="btn-finish" onclick="location.reload()">Done</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="./js/index.js"></script>
+</body>
+
 </html>
