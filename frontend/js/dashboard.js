@@ -29,8 +29,20 @@ async function loadOrders() {
     renderOrders();
     setOnline(true);
   } catch (err) {
-    setOnline(false, err.message);
     console.error("Dashboard Load Error:", err);
+    
+    // Try health check to see if server is even alive
+    try {
+      const healthRes = await fetch("/api/health");
+      const health = await healthRes.json();
+      if (health.database === "missing_keys") {
+        setOnline(false, "Database Keys Missing on Vercel");
+      } else {
+        setOnline(false, `API Error: ${err.message}`);
+      }
+    } catch {
+      setOnline(false, "Server Unreachable (Vercel Build Error)");
+    }
   }
 }
 

@@ -12,6 +12,16 @@ app.use(cors());
 app.use(express.json());
 
 // ── API Routes ────────────────────────────────────────────────
+const supabase = require("./src/config/supabase");
+
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok",
+    database: supabase ? "connected" : "missing_keys",
+    time: new Date().toISOString()
+  });
+});
+
 app.use("/api/orders", orderRoutes);
 app.use("/api/menu", menuRoutes);
 
