@@ -581,11 +581,28 @@ body {
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 16px; }
-  .orders-grid { padding: 0 16px; }
-  .orders-header { padding: 0 16px 14px; }
-  .topbar { padding: 14px 16px; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 16px; gap: 10px; }
+  .orders-grid { padding: 0 16px; grid-template-columns: 1fr; }
+  .orders-header { padding: 0 16px 14px; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .topbar { padding: 14px 16px; flex-wrap: wrap; gap: 12px; }
+  .menu-manager-header { padding: 0 16px 14px; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .menu-manager { padding: 0 16px; }
 }
 @media (max-width: 480px) {
   .stats-bar { grid-template-columns: 1fr 1fr; }
+  .stat-card { padding: 12px; }
+  .stat-card .value { font-size: 22px; }
+  .stat-card.revenue .value { font-size: 18px; }
+  .topbar { flex-direction: column; align-items: stretch; gap: 12px; }
+  .topbar > div:last-child { width: 100%; justify-content: stretch; flex-direction: column; }
+  .topbar > div:last-child button { width: 100%; }
+  .orders-header .filter-tabs { flex-wrap: wrap; }
+  .filter-tab { flex: 1; text-align: center; }
+  .menu-item-row { flex-direction: column; align-items: stretch; gap: 12px; }
+  .menu-item-row .item-info { width: 100%; }
+  .menu-item-row .item-price { text-align: left; }
+  .menu-item-row .item-actions { width: 100%; justify-content: space-between; }
+  .menu-item-row.editing { flex-direction: column; }
+  .menu-add-form { flex-direction: column; }
+  .menu-add-form input, .menu-add-form select, .menu-add-form button { width: 100%; flex: 1 1 auto; }
 }
