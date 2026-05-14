@@ -153,7 +153,6 @@ function setFilter(filter) {
 /* ── Online Status is handled at the top ── */
 
 /* ── Menu Manager ─────────────────────────────────── */
-const MENU_API = "/api/menu";
 
 function toggleMenuManager() {
   const panel = document.getElementById("menu-manager");
