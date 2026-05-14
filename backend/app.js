@@ -11,8 +11,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve frontend static files (css, js, images, etc.)
-const frontendDir = path.join(__dirname, "../frontend");
+// Serve frontend static files
+const frontendDir = path.resolve(__dirname, "..", "frontend");
 app.use(express.static(frontendDir));
 
 // Request logger (dev)
