@@ -22,6 +22,17 @@
   --transition:   0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+body.light-mode {
+  --bg:           #f4f4f9;
+  --surface:      #ffffff;
+  --surface-2:    #eef2f6;
+  --border:       rgba(0,0,0,0.08);
+  --text:         #1e1e2f;
+  --success-glow: rgba(34, 197, 94, 0.1);
+  --warning-glow: rgba(245, 158, 11, 0.1);
+  --primary-glow: rgba(255, 87, 34, 0.15);
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {

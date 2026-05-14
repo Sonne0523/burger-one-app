@@ -393,3 +393,25 @@ document.querySelectorAll(".filter-tab").forEach((tab) => {
 loadOrders();
 // Auto-refresh every 5 seconds
 pollInterval = setInterval(loadOrders, 5000);
+
+/* ── Theme Toggle ────────────────────────────────── */
+const themeToggle = document.getElementById("theme-toggle");
+const body = document.body;
+
+const savedTheme = localStorage.getItem("dashboard_theme");
+if (savedTheme === "light") {
+  body.classList.add("light-mode");
+  if (themeToggle) themeToggle.textContent = "🌙";
+}
+
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    body.classList.toggle("light-mode");
+    const isLight = body.classList.contains("light-mode");
+    localStorage.setItem("dashboard_theme", isLight ? "light" : "dark");
+    themeToggle.textContent = isLight ? "🌙" : "🌓";
+    if (typeof showToast === "function") {
+      showToast(isLight ? "☀️ Light Mode Active" : "🌙 Dark Mode Active");
+    }
+  });
+}
