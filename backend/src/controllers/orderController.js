@@ -124,4 +124,19 @@ const deleteOrder = async (req, res, next) => {
   }
 };
 
-module.exports = { placeOrder, getAllOrders, getStats, markAsPaid, deleteOrder };
+// DELETE /api/orders/reset
+const resetStats = async (req, res, next) => {
+  try {
+    const { error } = await supabase
+      .from("orders")
+      .delete()
+      .neq("id", 0);
+
+    if (error) throw error;
+    res.json({ message: "All stats and orders have been reset." });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { placeOrder, getAllOrders, getStats, markAsPaid, deleteOrder, resetStats };

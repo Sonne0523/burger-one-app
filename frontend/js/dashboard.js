@@ -140,6 +140,20 @@ async function removeOrder(id) {
   }
 }
 
+/* ── Reset Stats ─────────────────────────────────── */
+async function resetStats() {
+  if (!confirm("Are you sure you want to reset all stats and delete all orders? This cannot be undone.")) return;
+  try {
+    const res = await fetch(`${API_BASE}/reset`, { method: "DELETE" });
+    if (!res.ok) throw new Error();
+    await loadOrders();
+    if (typeof showToast === "function") showToast("✅ Stats and orders reset successfully!");
+    else alert("✅ Stats and orders reset successfully!");
+  } catch {
+    alert("Failed to reset stats.");
+  }
+}
+
 /* ── Filter Tabs ─────────────────────────────────── */
 function setFilter(filter) {
   activeFilter = filter;
