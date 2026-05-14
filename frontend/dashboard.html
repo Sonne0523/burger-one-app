@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Burger One — Staff kitchen & counter dashboard." />
     <title>Burger One — Staff Dashboard</title>
+  <script>
+    // Authentication Check
+    if (sessionStorage.getItem('burger_one_auth') !== 'true') {
+      window.location.href = '/login.html';
+    }
+  </script>
     <link rel="stylesheet" href="./css/dashboard.css" />
   </head>
   <body>

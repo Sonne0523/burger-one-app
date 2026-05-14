@@ -21,6 +21,10 @@
       "dest": "/frontend/dashboard.html"
     },
     {
+      "src": "/login",
+      "dest": "/frontend/login.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "frontend/$1"
     }
