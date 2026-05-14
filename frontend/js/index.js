@@ -227,83 +227,138 @@ function downloadReceiptPDF() {
   
   const { order, cartItems, subtotal, tax, grandTotal } = currentReceiptData;
   const { jsPDF } = window.jspdf;
+  
+  // Estimate height based on items
+  const docHeight = Math.max(130, 80 + (cartItems.length * 8));
   const doc = new jsPDF({
     unit: "mm",
-    format: [80, 150] // Receipt-style size
+    format: [80, docHeight]
   });
 
   const centerX = 40;
-  let y = 10;
+  let y = 12;
+
+  // Top accent bar
+  doc.setFillColor(255, 87, 34);
+  doc.rect(0, 0, 80, 4, "F");
 
   // Header
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(16);
+  doc.setFontSize(20);
+  doc.setTextColor(30, 30, 30);
   doc.text("BURGER ONE", centerX, y, { align: "center" });
   
   y += 5;
   doc.setFontSize(8);
-  doc.setFont("helvetica", "normal");
-  doc.text("Fast · Fresh · Delicious", centerX, y, { align: "center" });
+  doc.setFont("helvetica", "italic");
+  doc.setTextColor(120, 120, 120);
+  doc.text("Fresh. Fast. Delicious.", centerX, y, { align: "center" });
+  
+  y += 6;
+  doc.setDrawColor(220, 220, 220);
+  doc.setLineWidth(0.5);
+  doc.line(5, y, 75, y);
+  
+  // Order Info Box
+  y += 4;
+  doc.setFillColor(248, 248, 248);
+  doc.roundedRect(5, y, 70, 24, 2, 2, "F");
   
   y += 5;
-  doc.text("------------------------------------------", centerX, y, { align: "center" });
-  
-  // Order Info
-  y += 5;
+  doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
-  doc.text(`Order: #${String(order.id).padStart(3, "0")}`, 10, y);
-  y += 4;
+  doc.setTextColor(50, 50, 50);
+  doc.text("ORDER #", 8, y);
+  doc.setTextColor(255, 87, 34);
+  doc.text(`${String(order.id).padStart(3, "0")}`, 72, y, { align: "right" });
+  
+  y += 6;
   doc.setFont("helvetica", "normal");
-  doc.text(`Name: ${order.customerName}`, 10, y);
-  y += 4;
-  doc.text(`Date: ${new Date().toLocaleDateString()}`, 10, y);
-  y += 4;
-  doc.text(`Time: ${order.timestamp}`, 10, y);
-  
-  y += 5;
-  doc.text("------------------------------------------", centerX, y, { align: "center" });
-  
-  // Items
-  y += 5;
+  doc.setTextColor(60, 60, 60);
+  doc.text("Customer:", 8, y);
   doc.setFont("helvetica", "bold");
-  doc.text("Items", 10, y);
-  doc.text("Price", 70, y, { align: "right" });
+  doc.text(order.customerName, 72, y, { align: "right" });
   
-  y += 4;
+  y += 6;
   doc.setFont("helvetica", "normal");
+  doc.text("Date & Time:", 8, y);
+  doc.text(`${new Date().toLocaleDateString()} ${order.timestamp}`, 72, y, { align: "right" });
+  
+  y += 6; // Move below box
+  doc.line(5, y, 75, y);
+  
+  // Items Header
+  y += 6;
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(30, 30, 30);
+  doc.text("ITEM", 5, y);
+  doc.text("QTY", 55, y, { align: "center" });
+  doc.text("PRICE", 75, y, { align: "right" });
+  
+  y += 3;
+  doc.line(5, y, 75, y);
+  
+  // Items List
+  y += 5;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(50, 50, 50);
+  
   cartItems.forEach(item => {
-    const itemText = `${item.name}${item.qty > 1 ? ` x${item.qty}` : ""}`;
-    const priceText = `₹${(item.price * item.qty).toFixed(2)}`;
-    doc.text(itemText, 10, y);
-    doc.text(priceText, 70, y, { align: "right" });
-    y += 4;
+    const splitName = doc.splitTextToSize(item.name, 45);
+    doc.text(splitName, 5, y);
+    doc.text(`${item.qty}`, 55, y, { align: "center" });
+    doc.text(`${(item.price * item.qty).toFixed(2)}`, 75, y, { align: "right" });
+    y += (splitName.length * 4) + 1;
   });
   
   y += 2;
-  doc.text("------------------------------------------", centerX, y, { align: "center" });
+  doc.line(5, y, 75, y);
   
   // Totals
+  y += 6;
+  doc.text("Subtotal", 40, y);
+  doc.text(`Rs ${subtotal.toFixed(2)}`, 75, y, { align: "right" });
+  
   y += 5;
-  doc.text("Subtotal:", 10, y);
-  doc.text(`₹${subtotal.toFixed(2)}`, 70, y, { align: "right" });
+  doc.text("Tax (5%)", 40, y);
+  doc.text(`Rs ${tax.toFixed(2)}`, 75, y, { align: "right" });
+  
   y += 4;
-  doc.text("Tax (5%):", 10, y);
-  doc.text(`₹${tax.toFixed(2)}`, 70, y, { align: "right" });
+  doc.setDrawColor(30, 30, 30);
+  doc.setLineWidth(0.8);
+  doc.line(40, y, 75, y);
   
   y += 6;
-  doc.setFontSize(12);
+  doc.setFontSize(11);
   doc.setFont("helvetica", "bold");
-  doc.text("TOTAL:", 10, y);
-  doc.text(`₹${grandTotal.toFixed(2)}`, 70, y, { align: "right" });
+  doc.setTextColor(30, 30, 30);
+  doc.text("TOTAL", 40, y);
+  doc.setTextColor(255, 87, 34);
+  doc.text(`Rs ${grandTotal.toFixed(2)}`, 75, y, { align: "right" });
   
-  y += 8;
+  // Footer
+  y += 14;
+  doc.setTextColor(100, 100, 100);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "italic");
+  doc.text("Thank you for choosing", centerX, y, { align: "center" });
+  
+  y += 5;
+  doc.setFont("helvetica", "bold");
+  doc.text("Burger One!", centerX, y, { align: "center" });
+  
+  y += 7;
   doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
-  doc.text("Thank you for your order!", centerX, y, { align: "center" });
-  y += 4;
-  doc.text("See you again soon!", centerX, y, { align: "center" });
+  doc.text("Please show this receipt at the counter.", centerX, y, { align: "center" });
+  
+  // Bottom accent bar
+  doc.setFillColor(255, 87, 34);
+  doc.rect(0, docHeight - 4, 80, 4, "F");
 
-  doc.save(`Receipt_Order_${order.id}.pdf`);
+  doc.save(`BurgerOne_Receipt_${order.id}.pdf`);
 
   // Show thank you message
   showToast("❤️ Thank you, visit again!");
