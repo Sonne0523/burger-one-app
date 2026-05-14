@@ -2,7 +2,7 @@
    app.js — Customer Ordering Page Logic
    ───────────────────────────────────────────────── */
 
-const MENU_API = "http://localhost:3000/api/menu";
+const MENU_API = "/api/menu";
 let ALL_MENU = [];
 let CURRENT_FILTER = 'all';
 
@@ -316,7 +316,7 @@ function downloadReceiptPDF() {
 }
 
 /* ── Init ────────────────────────────────────────── */
-const API_BASE = "http://localhost:3000/api/orders";
+const API_BASE = "/api/orders";
 fetchMenu();
 renderCart();
 

@@ -2,7 +2,8 @@
    dashboard.js — Staff Dashboard Logic
    ───────────────────────────────────────────────── */
 
-const API_BASE = "http://localhost:3000/api/orders";
+const API_BASE = "/api/orders";
+const MENU_API = "/api/menu";
 
 let allOrders  = [];
 let activeFilter = "all";
