@@ -185,13 +185,11 @@ async function placeOrder() {
 }
 
 /* ── Show Receipt ────────────────────────────────── */
-function showReceipt(order, cartItems, subtotalRaw) {
-  const subtotal   = parseFloat(subtotalRaw);
-  const tax        = subtotal * 0.05;
-  const grandTotal = subtotal + tax;
+function showReceipt(order, cartItems, totalRaw) {
+  const total = parseFloat(totalRaw);
 
   // Store data for PDF download
-  currentReceiptData = { order, cartItems, subtotal, tax, grandTotal };
+  currentReceiptData = { order, cartItems, total };
   document.getElementById("order-screen").style.display  = "none";
   document.getElementById("receipt-screen").style.display = "flex";
 
@@ -199,9 +197,7 @@ function showReceipt(order, cartItems, subtotalRaw) {
   document.getElementById("receipt-name").textContent     = order.customerName;
   document.getElementById("receipt-time").textContent     = order.timestamp;
   document.getElementById("receipt-date").textContent     = new Date().toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
-  document.getElementById("receipt-subtotal").textContent = `₹${subtotal.toFixed(2)}`;
-  document.getElementById("receipt-tax").textContent      = `₹${tax.toFixed(2)}`;
-  document.getElementById("receipt-grand").textContent    = `₹${grandTotal.toFixed(2)}`;
+  document.getElementById("receipt-grand").textContent    = `₹${total.toFixed(2)}`;
 
   // Itemized list
   document.getElementById("receipt-items-list").innerHTML = cartItems.map((c) => `
@@ -225,7 +221,7 @@ let currentReceiptData = null;
 function downloadReceiptPDF() {
   if (!currentReceiptData) return;
   
-  const { order, cartItems, subtotal, tax, grandTotal } = currentReceiptData;
+  const { order, cartItems, total } = currentReceiptData;
   const { jsPDF } = window.jspdf;
   
   // Estimate height based on items
@@ -317,14 +313,6 @@ function downloadReceiptPDF() {
   doc.line(5, y, 75, y);
   
   // Totals
-  y += 6;
-  doc.text("Subtotal", 40, y);
-  doc.text(`Rs ${subtotal.toFixed(2)}`, 75, y, { align: "right" });
-  
-  y += 5;
-  doc.text("Tax (5%)", 40, y);
-  doc.text(`Rs ${tax.toFixed(2)}`, 75, y, { align: "right" });
-  
   y += 4;
   doc.setDrawColor(30, 30, 30);
   doc.setLineWidth(0.8);
@@ -336,7 +324,7 @@ function downloadReceiptPDF() {
   doc.setTextColor(30, 30, 30);
   doc.text("TOTAL", 40, y);
   doc.setTextColor(255, 87, 34);
-  doc.text(`Rs ${grandTotal.toFixed(2)}`, 75, y, { align: "right" });
+  doc.text(`Rs ${total.toFixed(2)}`, 75, y, { align: "right" });
   
   // Footer
   y += 14;
