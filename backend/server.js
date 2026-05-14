@@ -4,7 +4,7 @@ const app = require("./app");
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`\n✅  Fastfood API running → http://localhost:${PORT}`);
+  console.log(`\n✅  Burger One API running → http://localhost:${PORT}`);
   console.log(`   Endpoints:`);
   console.log(`   POST   /api/orders/place`);
   console.log(`   GET    /api/orders/all`);

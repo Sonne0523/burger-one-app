@@ -1,0 +1,1 @@
+⚠️  menu_items table not found, using in-memory storage.

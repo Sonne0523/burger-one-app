@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Burger Express — Staff kitchen & counter dashboard." />
-    <title>Burger Express — Staff Dashboard</title>
+    <meta name="description" content="Burger One — Staff kitchen & counter dashboard." />
+    <title>Burger One — Staff Dashboard</title>
     <link rel="stylesheet" href="./css/dashboard.css" />
   </head>
   <body>
@@ -52,6 +52,41 @@
 
       <div class="orders-grid" id="orders-grid">
         <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- ── Manage Menu ────────────────────────────── -->
+    <section class="menu-manager-section">
+      <div class="menu-manager-header">
+        <h2>📋 Manage Menu</h2>
+        <button class="toggle-menu-btn" id="toggle-menu-btn" onclick="toggleMenuManager()">Show Menu Manager</button>
+      </div>
+
+      <div class="menu-manager" id="menu-manager" style="display:none">
+        <form class="menu-add-form" id="menu-add-form" onsubmit="addMenuItem(event)">
+          <input type="text" id="menu-emoji" placeholder="🍔" style="flex: 0 0 50px">
+          <input type="text" id="menu-name" placeholder="Item name" required>
+          <select id="menu-type" style="padding: 10px; border-radius: 8px; background: var(--surface); color: var(--text); border: 1px solid var(--border); font-family: 'Outfit', sans-serif;">
+            <option value="veg">🟢 Veg</option>
+            <option value="non-veg">🔴 Non-Veg</option>
+          </select>
+          <select id="menu-category" style="padding: 10px; border-radius: 8px; background: var(--surface); color: var(--text); border: 1px solid var(--border); font-family: 'Outfit', sans-serif;">
+            <option value="Maggi">Maggi</option>
+            <option value="Snacks">Snacks</option>
+            <option value="Beverages">Beverages</option>
+            <option value="Burger Non-Veg">Burger Non-Veg</option>
+            <option value="Burger Veg">Burger Veg</option>
+            <option value="Wrap Non-Veg">Wrap Non-Veg</option>
+            <option value="Wrap Veg">Wrap Veg</option>
+            <option value="Hot & Crispy">Hot & Crispy</option>
+          </select>
+          <input type="number" id="menu-price" placeholder="Price (₹)" step="0.01" required style="flex: 0 0 100px">
+          <button type="submit">+ Add Item</button>
+        </form>
+
+        <div class="menu-items-list" id="menu-items-list">
+          <!-- Rendered by JS -->
+        </div>
       </div>
     </section>
 

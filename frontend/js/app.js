@@ -2,40 +2,111 @@
    app.js — Customer Ordering Page Logic
    ───────────────────────────────────────────────── */
 
-const API_BASE = "http://localhost:3000/api/orders";
+const MENU_API = "http://localhost:3000/api/menu";
+let ALL_MENU = [];
+let CURRENT_FILTER = 'all';
 
-const MENU = [
-  { id: 1, name: "Cheese Burger",    emoji: "🍔", price: 5.99 },
-  { id: 2, name: "Spicy Chicken",    emoji: "🌶️", price: 6.49 },
-  { id: 3, name: "Crispy Fries",     emoji: "🍟", price: 2.99 },
-  { id: 4, name: "Onion Rings",      emoji: "🧅", price: 3.49 },
-  { id: 5, name: "BBQ Wrap",         emoji: "🌯", price: 7.29 },
-  { id: 6, name: "Vanilla Shake",    emoji: "🥤", price: 3.99 },
-];
+async function fetchMenu() {
+  try {
+    const res = await fetch(MENU_API);
+    ALL_MENU = await res.json();
+    renderMenu();
+  } catch {
+    console.error("Failed to fetch menu");
+  }
+}
+
+function filterMenu(type) {
+  CURRENT_FILTER = type;
+  
+  // Update active button state
+  const filterButtons = document.querySelectorAll('#main-menu-filters .filter-btn');
+  filterButtons.forEach(btn => {
+    // Check if button text or a data attribute matches. 
+    // Since we use onclick, we can check the argument passed to filterMenu.
+    const btnType = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
+    btn.classList.toggle('active', btnType === type);
+  });
+  
+  renderMenu();
+}
 
 let cart = []; // { id, name, price, qty }
 
 /* ── Render Menu ─────────────────────────────────── */
 function renderMenu() {
   const grid = document.getElementById("menu-grid");
-  grid.innerHTML = MENU.map((item) => {
-    const inCart = cart.find((c) => c.id === item.id);
+  if (ALL_MENU.length === 0) {
+    grid.innerHTML = "<div class='loading'>Loading menu...</div>";
+    return;
+  }
+
+  const filtered = ALL_MENU.filter(item => {
+    if (CURRENT_FILTER === 'all') return true;
+    const itemType = item.type || 'veg';
+    return itemType === CURRENT_FILTER;
+  });
+
+  // Group by category
+  const categories = {};
+  filtered.forEach(item => {
+    const cat = item.category || "General";
+    if (!categories[cat]) categories[cat] = [];
+    categories[cat].push(item);
+  });
+
+  // Preservation of order based on the menu image
+  const categoryOrder = [
+    "Maggi", "Snacks", "Beverages", 
+    "Burger Non-Veg", "Burger Veg", 
+    "Wrap Non-Veg", "Wrap Veg", 
+    "Hot & Crispy"
+  ];
+
+  // Identify categories not in the list
+  const otherCategories = Object.keys(categories).filter(c => !categoryOrder.includes(c));
+  const finalOrder = [...categoryOrder, ...otherCategories];
+
+  let html = finalOrder.map(catName => {
+    const items = categories[catName];
+    if (!items || items.length === 0) return "";
+    
     return `
-      <div class="menu-card ${inCart ? "in-cart" : ""}" id="card-${item.id}">
-        <span class="badge" id="badge-${item.id}">${inCart ? inCart.qty : ""}</span>
-        <span class="emoji">${item.emoji}</span>
-        <div class="name">${item.name}</div>
-        <div class="price">$${item.price.toFixed(2)}</div>
-        <button class="add-btn" onclick="addToCart(${item.id})">
-          ${inCart ? "Add More" : "+ Add"}
-        </button>
+      <div class="category-block">
+        <h3 class="category-title">${catName}</h3>
+        <div class="category-grid">
+          ${items.map(item => {
+            const isOut = item.is_available === false;
+            const inCart = cart.find((c) => c.id === item.id);
+            const typeClass = item.type === 'non-veg' ? 'non-veg' : 'veg';
+            return `
+              <div class="menu-card ${inCart ? "in-cart" : ""} ${isOut ? "out-of-stock" : ""} ${typeClass}" id="card-${item.id}">
+                <span class="badge" id="badge-${item.id}">${inCart ? inCart.qty : ""}</span>
+                <span class="emoji">${item.emoji}</span>
+                <div class="name">
+                  <span class="type-dot"></span>
+                  ${item.name}
+                </div>
+                <div class="price">₹${item.price.toFixed(2)}</div>
+                <button class="add-btn" onclick="addToCart(${item.id})" ${isOut ? "disabled" : ""}>
+                  ${isOut ? "Out of Stock" : (inCart ? "Add More" : "+ Add")}
+                </button>
+              </div>`;
+          }).join("")}
+        </div>
       </div>`;
   }).join("");
+
+  if (!html) {
+    html = `<div class="empty-state">No items found for this selection.</div>`;
+  }
+
+  grid.innerHTML = html;
 }
 
 /* ── Cart Ops ────────────────────────────────────── */
 function addToCart(id) {
-  const item = MENU.find((m) => m.id === id);
+  const item = ALL_MENU.find((m) => m.id === id);
   const existing = cart.find((c) => c.id === id);
   if (existing) {
     existing.qty++;
@@ -74,12 +145,12 @@ function renderCart() {
     <div class="cart-item">
       <span class="item-name">${c.emoji} ${c.name} ×${c.qty}</span>
       <div class="item-right">
-        <span class="item-price">$${(c.price * c.qty).toFixed(2)}</span>
+        <span class="item-price">₹${(c.price * c.qty).toFixed(2)}</span>
         <button class="remove-btn" onclick="removeFromCart(${c.id})" title="Remove">✕</button>
       </div>
     </div>`).join("");
 
-  document.getElementById("total-amount").textContent = `$${total.toFixed(2)}`;
+  document.getElementById("total-amount").textContent = `₹${total.toFixed(2)}`;
 }
 
 /* ── Place Order ─────────────────────────────────── */
@@ -116,7 +187,7 @@ async function placeOrder() {
 /* ── Show Receipt ────────────────────────────────── */
 function showReceipt(order, cartItems, subtotalRaw) {
   const subtotal   = parseFloat(subtotalRaw);
-  const tax        = subtotal * 0.08;
+  const tax        = subtotal * 0.05;
   const grandTotal = subtotal + tax;
 
   // Store data for PDF download
@@ -128,15 +199,15 @@ function showReceipt(order, cartItems, subtotalRaw) {
   document.getElementById("receipt-name").textContent     = order.customerName;
   document.getElementById("receipt-time").textContent     = order.timestamp;
   document.getElementById("receipt-date").textContent     = new Date().toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
-  document.getElementById("receipt-subtotal").textContent = `$${subtotal.toFixed(2)}`;
-  document.getElementById("receipt-tax").textContent      = `$${tax.toFixed(2)}`;
-  document.getElementById("receipt-grand").textContent    = `$${grandTotal.toFixed(2)}`;
+  document.getElementById("receipt-subtotal").textContent = `₹${subtotal.toFixed(2)}`;
+  document.getElementById("receipt-tax").textContent      = `₹${tax.toFixed(2)}`;
+  document.getElementById("receipt-grand").textContent    = `₹${grandTotal.toFixed(2)}`;
 
   // Itemized list
   document.getElementById("receipt-items-list").innerHTML = cartItems.map((c) => `
     <div class="receipt-item">
       <span class="item-desc">${c.emoji} ${c.name}${c.qty > 1 ? ` ×${c.qty}` : ""}</span>
-      <span class="item-amt">$${(c.price * c.qty).toFixed(2)}</span>
+      <span class="item-amt">₹${(c.price * c.qty).toFixed(2)}</span>
     </div>`).join("");
 }
 
@@ -167,7 +238,7 @@ function downloadReceiptPDF() {
   // Header
   doc.setFont("helvetica", "bold");
   doc.setFontSize(16);
-  doc.text("BURGER EXPRESS", centerX, y, { align: "center" });
+  doc.text("BURGER ONE", centerX, y, { align: "center" });
   
   y += 5;
   doc.setFontSize(8);
@@ -202,7 +273,7 @@ function downloadReceiptPDF() {
   doc.setFont("helvetica", "normal");
   cartItems.forEach(item => {
     const itemText = `${item.name}${item.qty > 1 ? ` x${item.qty}` : ""}`;
-    const priceText = `$${(item.price * item.qty).toFixed(2)}`;
+    const priceText = `₹${(item.price * item.qty).toFixed(2)}`;
     doc.text(itemText, 10, y);
     doc.text(priceText, 70, y, { align: "right" });
     y += 4;
@@ -214,16 +285,16 @@ function downloadReceiptPDF() {
   // Totals
   y += 5;
   doc.text("Subtotal:", 10, y);
-  doc.text(`$${subtotal.toFixed(2)}`, 70, y, { align: "right" });
+  doc.text(`₹${subtotal.toFixed(2)}`, 70, y, { align: "right" });
   y += 4;
-  doc.text("Tax (8%):", 10, y);
-  doc.text(`$${tax.toFixed(2)}`, 70, y, { align: "right" });
+  doc.text("Tax (5%):", 10, y);
+  doc.text(`₹${tax.toFixed(2)}`, 70, y, { align: "right" });
   
   y += 6;
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.text("TOTAL:", 10, y);
-  doc.text(`$${grandTotal.toFixed(2)}`, 70, y, { align: "right" });
+  doc.text(`₹${grandTotal.toFixed(2)}`, 70, y, { align: "right" });
   
   y += 8;
   doc.setFontSize(8);
@@ -245,7 +316,8 @@ function downloadReceiptPDF() {
 }
 
 /* ── Init ────────────────────────────────────────── */
-renderMenu();
+const API_BASE = "http://localhost:3000/api/orders";
+fetchMenu();
 renderCart();
 
 // Theme Toggle Logic

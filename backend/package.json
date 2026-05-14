@@ -1,7 +1,7 @@
 {
-  "name": "fastfood-backend",
+  "name": "burger-one-backend",
   "version": "1.0.0",
-  "description": "Fastfood App — REST API",
+  "description": "Burger One — REST API",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

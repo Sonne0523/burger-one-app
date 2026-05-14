@@ -1,10 +1,10 @@
 @echo off
-title Fastfood App — Launcher
+title Burger One — Launcher
 color 0A
 
 echo.
 echo  ==========================================
-echo    🍔  BURGER EXPRESS — Starting Up...
+echo    🍔  BURGER ONE — Starting Up...
 echo  ==========================================
 echo.
 
@@ -37,7 +37,7 @@ if not exist "%~dp0backend\node_modules" (
 
 :: ── Start Backend Server in a new window ─────────────────────
 echo  [1/3] Starting backend server on http://localhost:3000 ...
-start "Fastfood API Server" cmd /k "cd /d "%~dp0backend" && node server.js"
+start "Burger One API Server" cmd /k "cd /d "%~dp0backend" && node server.js"
 
 :: ── Wait for server to boot ───────────────────────────────────
 echo  [2/3] Waiting for server to start...
@@ -59,6 +59,6 @@ echo    Dashboard →  http://localhost:3000/dashboard
 echo    API       →  http://localhost:3000/api/orders
 echo  ==========================================
 echo.
-echo  Close the "Fastfood API Server" window to stop the server.
+echo  Close the "Burger One API Server" window to stop the server.
 echo.
 pause

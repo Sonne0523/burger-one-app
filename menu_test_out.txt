@@ -1,0 +1,8 @@
+
+✅  Fastfood API running → http://localhost:3000
+   Endpoints:
+   POST   /api/orders/place
+   GET    /api/orders/all
+   GET    /api/orders/stats
+   PATCH  /api/orders/pay/:id
+

@@ -44,6 +44,7 @@ const getAllOrders = async (req, res, next) => {
     const { data, error } = await supabase
       .from("orders")
       .select("*")
+      .neq("status", "Completed") // Don't show completed/removed orders
       .order("id", { ascending: false });
 
     if (error) throw error;
@@ -70,8 +71,10 @@ const getStats = async (req, res, next) => {
     const total = data.length;
     const pending = data.filter((o) => o.status === "Pending Payment").length;
     const paid = data.filter((o) => o.status === "Paid").length;
+    
+    // Revenue should include both active 'Paid' orders and 'Completed' ones
     const revenue = data
-      .filter((o) => o.status === "Paid")
+      .filter((o) => o.status === "Paid" || o.status === "Completed")
       .reduce((sum, o) => sum + parseFloat(o.total), 0)
       .toFixed(2);
 
@@ -88,7 +91,7 @@ const markAsPaid = async (req, res, next) => {
 
     const { data, error } = await supabase
       .from("orders")
-      .update({ status: "Paid", paid_at: new Date().toISOString() })
+      .update({ status: "Paid" })
       .eq("id", id)
       .select();
 
@@ -108,10 +111,14 @@ const deleteOrder = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
 
-    const { error } = await supabase.from("orders").delete().eq("id", id);
+    // Instead of deleting, we mark as 'Completed' so revenue stats are preserved
+    const { error } = await supabase
+      .from("orders")
+      .update({ status: "Completed" })
+      .eq("id", id);
 
     if (error) throw error;
-    res.json({ message: `Order #${id} removed successfully.` });
+    res.json({ message: `Order #${id} marked as completed and removed from view.` });
   } catch (err) {
     next(err);
   }
