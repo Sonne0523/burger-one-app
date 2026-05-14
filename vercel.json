@@ -17,6 +17,10 @@
       "dest": "backend/app.js"
     },
     {
+      "src": "/dashboard",
+      "dest": "/frontend/dashboard.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "frontend/$1"
     }
