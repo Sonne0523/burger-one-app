@@ -17,7 +17,7 @@ const placeOrder = async (req, res, next) => {
           items,
           total: parseFloat(total),
           status: "Pending Payment",
-          timestamp: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+          timestamp: new Date().toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit" }),
         },
       ])
       .select();
