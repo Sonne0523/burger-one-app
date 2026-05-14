@@ -17,14 +17,29 @@ async function loadOrders() {
       fetch(`${API_BASE}/stats`),
     ]);
 
+    if (!ordersRes.ok || !statsRes.ok) {
+      const err = await ordersRes.json().catch(() => ({}));
+      throw new Error(err.error || `Server Error (${ordersRes.status})`);
+    }
+
     allOrders = await ordersRes.json();
     const stats = await statsRes.json();
 
     updateStats(stats);
     renderOrders();
     setOnline(true);
-  } catch {
-    setOnline(false);
+  } catch (err) {
+    setOnline(false, err.message);
+    console.error("Dashboard Load Error:", err);
+  }
+}
+
+function setOnline(isOnline, errorMsg = "") {
+  const status = document.getElementById("connection-status");
+  if (isOnline) {
+    status.innerHTML = '<span class="status-dot online"></span> Online';
+  } else {
+    status.innerHTML = `<span class="status-dot offline"></span> ${errorMsg || "Connecting..."}`;
   }
 }
 
@@ -123,16 +138,10 @@ function setFilter(filter) {
 }
 
 /* ── Online Status ───────────────────────────────── */
-function setOnline(isOnline) {
-  const dot  = document.getElementById("status-dot");
-  const text = document.getElementById("status-text");
-  dot.style.background    = isOnline ? "var(--success)" : "#ef4444";
-  dot.style.boxShadow     = isOnline ? "0 0 8px var(--success)" : "0 0 8px #ef4444";
-  text.textContent        = isOnline ? "System Online" : "Connection Lost";
-}
+/* ── Online Status is handled at the top ── */
 
 /* ── Menu Manager ─────────────────────────────────── */
-const MENU_API = "http://localhost:3000/api/menu";
+const MENU_API = "/api/menu";
 
 function toggleMenuManager() {
   const panel = document.getElementById("menu-manager");
