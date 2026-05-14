@@ -12,9 +12,10 @@ let pollInterval;
 /* ── Fetch + Render ──────────────────────────────── */
 async function loadOrders() {
   try {
+    const t = Date.now();
     const [ordersRes, statsRes] = await Promise.all([
-      fetch(`${API_BASE}/all`),
-      fetch(`${API_BASE}/stats`),
+      fetch(`${API_BASE}/all?_t=${t}`),
+      fetch(`${API_BASE}/stats?_t=${t}`),
     ]);
 
     if (!ordersRes.ok || !statsRes.ok) {
